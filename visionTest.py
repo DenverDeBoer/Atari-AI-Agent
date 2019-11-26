@@ -1,7 +1,8 @@
+#Based off of code from: https://www.pyimagesearch.com/2015/05/25/basic-motion-detection-and-tracking-with-python-and-opencv/
 import argparse
 import imutils
-import cv2
 import time
+import cv2
 from imutils.video import VideoStream
 
 vs = VideoStream(src=0).start()
@@ -33,13 +34,12 @@ while True:
     contours = imutils.grab_contours(contours)
 
     for c in contours:
-        if cv2.contourArea(c) < 500:
+        if cv2.contourArea(c) > 5000 or cv2.contourArea(c) < 1000:
             continue
         (x, y, z, t) = cv2.boundingRect(c)
-        cv2.rectangle(frame, (x, y), (x + z, y + t), (0, 255, 0), 2)
+        cv2.rectangle(frame, (x, y), (x + z, y + t), (0, 0, 255), 2)
 
     cv2.imshow("Vision Tracking Test", frame)
-    cv2.imshow("Threshold", thresh)
     cv2.imshow("Frame Delta", deltaFrame)
 
     key = cv2.waitKey(1) & 0xFF
