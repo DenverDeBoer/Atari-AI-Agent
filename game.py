@@ -51,7 +51,7 @@ while True:
             if a >= ac_space.n:
                 print("WARNING: ignoring illegal action {}.".format(a))
                 a = 0
-        elif args.mode == 'agent':
+        elif args.mode == 'freewayAgent':
             #0 - Stay
             #1 - Forward
             #2 - Backward
