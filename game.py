@@ -1,67 +1,90 @@
 #Base OpenAI code from: https://github.com/openai/gym/blob/master/examples/scripts/sim_env
 #Base OpenCV code from: https://www.pyimagesearch.com/2015/05/25/basic-motion-detection-and-tracking-with-python-and-opencv/
+#Other stuff: https://www.digitalocean.com/community/tutorials/how-to-build-atari-bot-with-openai-gym
 #!/usr/bin/env python
-import gym
-from gym import spaces, envs
-import argparse
-import numpy as np
-import itertools
-import time
-from builtins import input
+import gym                      #Environment
+import numpy as np              #Used for linear algebra
+import random                   #Allow for seeding
 
+import argparse                 #Get command line arguments
+from builtins import input      #Used for getting user input
+
+from os import system
+from time import sleep
+
+#Get arguments from command line
 parser = argparse.ArgumentParser()
 parser.add_argument("env")
-parser.add_argument("-m", "--mode", choices=["noop", "random", "human", "freewayAgent"],
-    default="random")
-parser.add_argument("--max_steps", type=int, default=0)
+parser.add_argument("-m", "--mode", choices=["random", "human", "agent"],
+    default="agent")
 args = parser.parse_args()
 
-env = envs.make(args.env)
-ac_space = env.action_space
+#Seed in order to reproduce results
+random.seed(0)
+np.random.seed(0)
 
-fps = env.metadata.get('video.frames_per_second') or 100
-if args.max_steps == 0: args.max_steps = env.spec.tags['wrapper_config.TimeLimit.max_episode_steps']
+#Factors for Q
+numEps = 1000
+discountFactor = 0.8
+learningRate = 0.9
+reportInterval = 500
 
-while True:
-    env.reset()
-    env.render(mode='human')
-    print("Starting a new trajectory")
-    for t in range(args.max_steps) if args.max_steps else itertools.count():
-        done = False
-        if args.mode == "noop":
-            if isinstance(ac_space, spaces.Box):
-                a = np.zeros(ac_space.shape)
-            elif isinstance(ac_space, spaces.Discrete):
-                a = 0
-            else:
-                raise NotImplementedError("noop not implemented for class {}".format(type(ac_space)))
-            time.sleep(1.0/fps)
-        elif args.mode == "random":
-            a = ac_space.sample()
-            env.render()
-            time.sleep(1.0/fps)
-        elif args.mode == "human":
-            a = input("type action from {0,...,%i} and press enter: "%(ac_space.n-1))
-            try:
-                a = int(a)
+def printReport(rewards, episode):
+    print("Average per 100 eps: %.2f\tBest Average of 100 eps: %.2f\tOverall ep average: %.2f\tEpisode: %d" % (np.mean(rewards[-100:]), max([np.mean(rewards[1:1+100]) for i in range(len(rewards)-100)]), np.mean(rewards), episode))
+
+def main():
+    #Create the environment and get the available actions
+    env = gym.make(args.env)
+    env.seed(0)
+
+    #Keep a running total of reward value
+    rewards = []
+
+    #Q-value table that will hold relationships between actions and reward
+    Q = np.zeros((env.observation_space.n, env.action_space.n))
+
+    for ep in range(1, numEps+1):
+        state = env.reset()
+        epReward = 0
+        env.render(mode='human')
+
+        while True:
+            #Performs random action from list of possible actions
+            if args.mode == "random":
+                action = ac_space.sample()
+                _ = system("clear")
                 env.render()
-            except ValueError:
-                print("WARNING: ignoring illegal action '{}'.".format(a))
-                a = 0
-            if a >= ac_space.n:
-                print("WARNING: ignoring illegal action {}.".format(a))
-                a = 0
-        elif args.mode == 'freewayAgent':
-            #0 - Stay
-            #1 - Forward
-            #2 - Backward
-            a = 1
-            env.render()
-            time.sleep(5.0/fps)
-        _, _, done, _ = env.step(a)
+                sleep(.5)
+            #Player controlled by user input
+            elif args.mode == "human":
+                action = input("type action from {0,...,%i} and press enter: "%(ac_space.n-1))
+                try:
+                    action = int(action)
+                    if action >= ac_space.n:
+                        print("Illegal action '{}'.".format(a))
+                        action = 0
+                    env.render()
+                except ValueError:
+                    print("WARNING: ignoring illegal action '{}'.".format(a))
+                    action = 0
+            #AI Agent ideally better than random agent and faster than human
+            elif args.mode == 'agent':
+                noise = np.random.random((1, env.action_space.n)) / (ep**2.)
+                action = np.argmax(Q[state, :] + noise)
+                nextState, reward, done, _ = env.step(action)
+                QTarget = reward + discountFactor * np.max(Q[nextState, :])
+                Q[state, action] = (1-learningRate) * Q[state, action] + learningRate * QTarget
+                epReward += reward
+                state = nextState
+                _ = system("clear")
+                env.render()
+                sleep(.5)
+                if done:
+                    rewards.append(epReward)
+                    if ep % reportInterval == 0:
+                        printReport(rewards, ep)
+                    break
+    printReport(rewards, -1)
 
-        env.render()
-        if done and not args.ignore_done:
-            break
-    print("Done after {} steps".format(t+1))
-    input("Press enter to continue or control c to exit")
+if __name__ == '__main__':
+    main()
