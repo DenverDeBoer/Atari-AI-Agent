@@ -9,7 +9,6 @@ import random                   #Allow for seeding
 import argparse                 #Get command line arguments
 from builtins import input      #Used for getting user input
 
-from os import system
 from time import sleep
 
 #Get arguments from command line
@@ -19,18 +18,21 @@ parser.add_argument("-m", "--mode", choices=["random", "human", "agent"],
     default="agent")
 args = parser.parse_args()
 
+#Open a file to write report to
+f = open("AIReport.txt", "a")
+
 #Seed in order to reproduce results
-random.seed(0)
-np.random.seed(0)
+#random.seed(0)
+#np.random.seed(0)
 
 #Factors for Q
-numEps = 1000
+numEps = 4000
 discountFactor = 0.8
 learningRate = 0.9
 reportInterval = 500
 
-def printReport(rewards, episode):
-    print("Average per 100 eps: %.2f\tBest Average of 100 eps: %.2f\tOverall ep average: %.2f\tEpisode: %d" % (np.mean(rewards[-100:]), max([np.mean(rewards[1:1+100]) for i in range(len(rewards)-100)]), np.mean(rewards), episode))
+def printReport(title, rewards, episode):
+    f.write("%s\tAverage per 100 eps: %.2f\tBest Average of 100 eps: %.2f\tOverall ep average: %.2f\tEpisode: %d\n" % (title, np.mean(rewards[-100:]), max([np.mean(rewards[i:i+100]) for i in range(len(rewards)-100)]), np.mean(rewards), episode))
 
 def main():
     #Create the environment and get the available actions
@@ -43,24 +45,29 @@ def main():
     #Q-value table that will hold relationships between actions and reward
     Q = np.zeros((env.observation_space.n, env.action_space.n))
 
-    for ep in range(1, numEps+1):
+    for ep in range(1, numEps + 1):
         state = env.reset()
         epReward = 0
         env.render(mode='human')
-
         while True:
             #Performs random action from list of possible actions
             if args.mode == "random":
-                action = ac_space.sample()
-                _ = system("clear")
+                action = env.action_space.sample()
+                _, reward, done, _ = env.step(action)
+                epReward += reward
                 env.render()
-                sleep(.5)
+                if done:
+                    rewards.append(epReward)
+                    if ep % reportInterval == 0:
+                        printReport("Random", rewards, ep)
+                        sleep(2)
+                    break
             #Player controlled by user input
             elif args.mode == "human":
-                action = input("type action from {0,...,%i} and press enter: "%(ac_space.n-1))
+                action = input("type action from {0,...,%i} and press enter: "%(env.action_space.n-1))
                 try:
                     action = int(action)
-                    if action >= ac_space.n:
+                    if action >= env.action_space.n:
                         print("Illegal action '{}'.".format(a))
                         action = 0
                     env.render()
@@ -76,15 +83,17 @@ def main():
                 Q[state, action] = (1-learningRate) * Q[state, action] + learningRate * QTarget
                 epReward += reward
                 state = nextState
-                _ = system("clear")
+                print("\n%d" % ep)
                 env.render()
-                sleep(.5)
                 if done:
                     rewards.append(epReward)
                     if ep % reportInterval == 0:
-                        printReport(rewards, ep)
+                        printReport("Agent", rewards, ep)
+                        sleep(2)
                     break
-    printReport(rewards, -1)
+    printReport("Overall", rewards, -1)
+    f.write("\n\n")
+    f.close()
 
 if __name__ == '__main__':
     main()
