@@ -1,6 +1,13 @@
+#Authors:
+#   Denver DeBoer
+#   Alex Woods
+#   Kevin Holkeboer
+#Description:
+#   This uses OpenAI Gym to create a Q learning algorithm for FrozenLake
+#   It uses a Q table to store various states and cooresponding actions
 #Base OpenAI code from: https://github.com/openai/gym/blob/master/examples/scripts/sim_env
-#Base OpenCV code from: https://www.pyimagesearch.com/2015/05/25/basic-motion-detection-and-tracking-with-python-and-opencv/
 #Other stuff: https://www.digitalocean.com/community/tutorials/how-to-build-atari-bot-with-openai-gym
+
 #!/usr/bin/env python
 import gym                      #Environment
 import numpy as np              #Used for linear algebra
@@ -9,7 +16,7 @@ import random                   #Allow for seeding
 import argparse                 #Get command line arguments
 from builtins import input      #Used for getting user input
 
-from time import sleep
+from time import sleep          #To pause the agent
 
 #Get arguments from command line
 parser = argparse.ArgumentParser()
@@ -26,10 +33,10 @@ f = open("Learn.txt", "a")
 #np.random.seed(0)
 
 #Factors for Q
-numEps = 4000
-discountFactor = 0.8
+numEps = 5000
+discountFactor = 0.85
 learningRate = 0.9
-reportInterval = 500
+reportInterval = 1000
 
 def printReport(title, rewards, episode):
     f.write("%s\tAverage per 100 eps: %.2f\tBest Average of 100 eps: %.2f\tOverall ep average: %.2f\tEpisode: %d\n" % (title, np.mean(rewards[-100:]), max([np.mean(rewards[i:i+100]) for i in range(len(rewards)-100)]), np.mean(rewards), episode))
