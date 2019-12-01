@@ -19,7 +19,7 @@ parser.add_argument("-m", "--mode", choices=["random", "human", "agent"],
 args = parser.parse_args()
 
 #Open a file to write report to
-f = open("AIReport.txt", "a")
+f = open("Regression.txt", "a")
 
 #Seed in order to reproduce results
 #random.seed(0)
