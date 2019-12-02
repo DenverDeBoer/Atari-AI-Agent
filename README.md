@@ -1,6 +1,6 @@
-# Atari-AI-Agent
+Atari-AI-Agent
 
-#Team Members
-#Alex Woods
-#Denver DeBoer
-#Kevin Holkeboer
+Team Members
+Alex Woods
+Denver DeBoer
+Kevin Holkeboer

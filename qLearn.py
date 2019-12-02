@@ -90,8 +90,11 @@ def main():
                 Q[state, action] = (1-learningRate) * Q[state, action] + learningRate * QTarget
                 epReward += reward
                 state = nextState
-                print("\n%d" % ep)
-                env.render()
+
+                #Print the game
+#                print("\n%d" % ep)
+#                env.render()
+
                 if done:
                     rewards.append(epReward)
                     if ep % reportInterval == 0:
