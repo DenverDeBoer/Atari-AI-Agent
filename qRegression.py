@@ -131,8 +131,8 @@ def main():
                     W, Q = train(np.array(states), np.array(labels), W)
 
                 #Print the game
-#                print("\n%d" % ep)
-#                env.render()
+                print("\n%d" % ep)
+                env.render()
 
                 if done:
                     rewards.append(epReward)

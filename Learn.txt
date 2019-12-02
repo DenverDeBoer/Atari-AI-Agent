@@ -1,0 +1,16 @@
+Agent	Average per 100 eps: 0.75	Best Average of 100 eps: 0.81	Overall ep average: 0.63	Episode: 1000
+Agent	Average per 100 eps: 0.69	Best Average of 100 eps: 0.81	Overall ep average: 0.68	Episode: 2000
+Agent	Average per 100 eps: 0.67	Best Average of 100 eps: 0.85	Overall ep average: 0.68	Episode: 3000
+Agent	Average per 100 eps: 0.69	Best Average of 100 eps: 0.87	Overall ep average: 0.69	Episode: 4000
+Agent	Average per 100 eps: 0.65	Best Average of 100 eps: 0.87	Overall ep average: 0.66	Episode: 5000
+Overall	Average per 100 eps: 0.65	Best Average of 100 eps: 0.87	Overall ep average: 0.66	Episode: -1
+
+
+Agent	Average per 100 eps: 0.62	Best Average of 100 eps: 0.68	Overall ep average: 0.51	Episode: 1000
+Agent	Average per 100 eps: 0.62	Best Average of 100 eps: 0.68	Overall ep average: 0.54	Episode: 2000
+Agent	Average per 100 eps: 0.60	Best Average of 100 eps: 0.72	Overall ep average: 0.56	Episode: 3000
+Agent	Average per 100 eps: 0.61	Best Average of 100 eps: 0.72	Overall ep average: 0.57	Episode: 4000
+Agent	Average per 100 eps: 0.47	Best Average of 100 eps: 0.72	Overall ep average: 0.55	Episode: 5000
+Overall	Average per 100 eps: 0.47	Best Average of 100 eps: 0.72	Overall ep average: 0.55	Episode: -1
+
+

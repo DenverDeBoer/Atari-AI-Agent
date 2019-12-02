@@ -92,8 +92,8 @@ def main():
                 state = nextState
 
                 #Print the game
-#                print("\n%d" % ep)
-#                env.render()
+                print("\n%d" % ep)
+                env.render()
 
                 if done:
                     rewards.append(epReward)
