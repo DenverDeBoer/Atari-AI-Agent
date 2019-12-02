@@ -127,8 +127,8 @@ def main():
                 state = nextState
 
                 #Train the model periodically
-#                if len(states) % 10 == 0:
-#                    W, Q = train(np.array(states), np.array(labels), W)
+                if len(states) % 10 == 0:
+                    W, Q = train(np.array(states), np.array(labels), W)
 
                 #Print the game
                 print("\n%d" % ep)

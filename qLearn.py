@@ -6,7 +6,7 @@
 #   This uses OpenAI Gym to create a Q learning algorithm for FrozenLake
 #   It uses a Q table to store various states and cooresponding actions
 #Base OpenAI code from: https://github.com/openai/gym/blob/master/examples/scripts/sim_env
-#Other stuff: https://www.digitalocean.com/community/tutorials/how-to-build-atari-bot-with-openai-gym
+#Q-learning: https://www.digitalocean.com/community/tutorials/how-to-build-atari-bot-with-openai-gym
 
 #!/usr/bin/env python
 import gym                      #Environment
